@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Building2 } from 'lucide-react';
+import { Building2, Menu } from 'lucide-react';
 import { AppProvider, useApp } from './context/AppContext';
 import Notification from './components/ui/Notification';
 import AuthPage from './components/auth/AuthPage';
@@ -16,8 +16,8 @@ import ReceiptsModal from './components/modals/ReceiptsModal';
 const Dashboard = () => {
   const { currentUser, selectedRestaurant, acceptInvite } = useApp();
   
-  // UI State
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // UI State - start with sidebar closed on mobile
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);
   const [showAddRestaurant, setShowAddRestaurant] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
   const [showManageAccess, setShowManageAccess] = useState(false);
@@ -56,9 +56,17 @@ const Dashboard = () => {
       
       <div
         className={`transition-all duration-300 ${
-          sidebarOpen ? 'ml-72' : 'ml-20'
+          sidebarOpen ? 'md:ml-72' : 'md:ml-20'
         }`}
       >
+        {/* Mobile menu button */}
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="md:hidden fixed top-4 left-4 z-30 p-2 bg-slate-800 rounded-xl text-white shadow-lg"
+        >
+          <Menu size={24} />
+        </button>
+
         {selectedRestaurant ? (
           <>
             <Header

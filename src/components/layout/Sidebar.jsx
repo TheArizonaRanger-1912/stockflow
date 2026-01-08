@@ -24,12 +24,29 @@ const Sidebar = ({ isOpen, onToggle, onAddRestaurant, onInvite, onEditProfile })
 
   const restaurants = getUserRestaurants();
 
+  const handleRestaurantSelect = (restaurant) => {
+    setSelectedRestaurant(restaurant);
+    // Close sidebar on mobile after selection
+    if (window.innerWidth < 768) {
+      onToggle();
+    }
+  };
+
   return (
-    <div
-      className={`fixed left-0 top-0 h-full bg-slate-900 border-r border-slate-700/50 transition-all duration-300 z-40 ${
-        isOpen ? 'w-72' : 'w-20'
-      }`}
-    >
+    <>
+      {/* Mobile overlay backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={onToggle}
+        />
+      )}
+
+      <div
+        className={`fixed left-0 top-0 h-full bg-slate-900 border-r border-slate-700/50 transition-all duration-300 z-40
+          ${isOpen ? 'w-72 translate-x-0' : 'w-20 -translate-x-full md:translate-x-0'}
+        `}
+      >
       <div className="flex flex-col h-full">
         {/* Logo */}
         <div className="p-6 border-b border-slate-700/50">
@@ -103,7 +120,7 @@ const Sidebar = ({ isOpen, onToggle, onAddRestaurant, onInvite, onEditProfile })
               return (
                 <button
                   key={restaurant.id}
-                  onClick={() => setSelectedRestaurant(restaurant)}
+                  onClick={() => handleRestaurantSelect(restaurant)}
                   className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${
                     selectedRestaurant?.id === restaurant.id
                       ? 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 text-white'
@@ -164,10 +181,10 @@ const Sidebar = ({ isOpen, onToggle, onAddRestaurant, onInvite, onEditProfile })
           </button>
         </div>
 
-        {/* Toggle button */}
+        {/* Toggle button - hidden on mobile when closed */}
         <button
           onClick={onToggle}
-          className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-6 h-12 bg-slate-800 border border-slate-700 rounded-r-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+          className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-6 h-12 bg-slate-800 border border-slate-700 rounded-r-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-colors hidden md:flex"
         >
           <ChevronRight
             size={16}
@@ -175,7 +192,8 @@ const Sidebar = ({ isOpen, onToggle, onAddRestaurant, onInvite, onEditProfile })
           />
         </button>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
